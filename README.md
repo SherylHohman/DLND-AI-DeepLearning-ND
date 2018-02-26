@@ -17,7 +17,7 @@ I wrote the:
   - output nodes, and the
   - learning rate  
  
-<sub>[Grader's Review](https://review.udacity.com/#!/reviews/1053123) of my project.  
+<sub>[Udactiy Grader's Review](https://review.udacity.com/#!/reviews/1053123) of my project.  
 Note: I have since updated my code to divide by batch size in the update_weights function,  
 and moved multiplying by the learning rate to the that same update_weights function.)</sub>
 
