@@ -173,6 +173,7 @@ class NeuralNetwork(object):
         return delta_weights_i_h, delta_weights_h_o
 
     def update_weights(self, delta_weights_i_h, delta_weights_h_o, n_records):
+        
         ''' Update weights on gradient descent step
          
             Arguments
@@ -182,11 +183,14 @@ class NeuralNetwork(object):
             n_records: number of records
 
         '''
+
+        #print("Batch Size: ", n_records)   # 128
+                
         # update hidden-to-output weights with gradient descent step
-        self.weights_hidden_to_output += delta_weights_h_o 
+        self.weights_hidden_to_output += delta_weights_h_o / n_records
         
         # update input-to-hidden weights with gradient descent step
-        self.weights_input_to_hidden += delta_weights_i_h 
+        self.weights_input_to_hidden += delta_weights_i_h / n_records
 
     def run(self, features):
         ''' Run a forward pass through the network with input features 
@@ -225,11 +229,14 @@ train_features shape: (15435, 56)
  test_features shape: (  504, 56)
 '''
 
-iterations = 1200     # batch size: 128, 120 iterations / pass of the entire dataset (on average)
-learning_rate = 0.015 # 56 ** -.5 = .134
+iterations = 1328     # batch size: 128, (15435/128) = ~120.586 iterations / pass of the entire dataset (on average)
+learning_rate = 2.0   # 0.015 * 128 = 1.92 as a Starting point
 hidden_nodes = 6      # features: 56, hidden nodes: (n_features-n_outputs)/2, try: 28
 output_nodes = 1      # I want an output of a single number: total number of rentals at each (hour)
 print('params: ',iterations, learning_rate, hidden_nodes, output_nodes)
+
+# prior to dividing the weights update step by n_records, my learning rate of .015 was good.
+# Since n_records is 128, I'll start with a new learning rate set to 0.015 * 128 = 1.92
 
 
 
@@ -325,8 +332,27 @@ print('params: ',iterations, learning_rate, hidden_nodes, output_nodes)
                       NOPE - VL jumped up right at the end
  2400, 0.015,  6, 1 *:Progress: 100.0% ... Training loss: 0.074 ... Validation loss: 0.150
  1000, 0.015,  6, 1  :Progress: 99.9% ... Training loss: 0.075 ... Validation loss: 0.160
- 1200, 0.015,  6, 1  :Progress: 99.9% ... Training loss: 0.069 ... Validation loss: 0.161
-                                            
+ 1200, 0.015,  6, 1**:Progress: 99.9% ... Training loss: 0.069 ... Validation loss: 0.161
+                      SUBMITTED THIS PROJECT -- ACCEPTED !!  -- YEA!! :-D
+ 
+----- AFTER CORRECTING THE WEIGHTS UPDATE PROCESS TO DIVIDE BY THE n_records IN A batch -----
+                        THEN UPDATING THE LEARNING PROPORTIONALLY..
+ 1200, 1.92,   6, 1  :Progress: 99.9% ... Training loss: 0.107 ... Validation loss: 0.191
+                      Good First Estimate! 
+ 1280, 2.0 ,   6, 1  :Progress: 99.9% ... Training loss: 0.066 ... Validation loss: 0.152
+                      EXCELLENT !
+ 1280, 1.0 ,   6, 1  :Progress: 99.9% ... Training loss: 0.145 ... Validation loss: 0.334
+                      Terrible - As I expected.  Thought I'd try the "recommended" starting point though
+ 1280, 1.5 ,   6, 1  :Progress: 99.9% ... Training loss: 0.113 ... Validation loss: 0.232
+                      Nope going the "recommended" direction doesn't work either. Stick with the Excellent Parmas
+                      I already found ;-)
+ 1207, 2.0 ,   6, 1  :Progress: 99.9% ... Training loss: 0.070 ... Validation loss: 0.174
+ 1218, 2.0 ,   6, 1  :Progress: 99.9% ... Training loss: 0.080 ... Validation loss: 0.199
+ 1326, 2.0 ,   6, 1  :Progress: 99.9% ... Training loss: 0.068 ... Validation loss: 0.141
+ 1328, 2.0 ,   6, 1**:Progress: 99.9% ... Training loss: 0.068 ... Validation loss: 0.135
+                      SUBMITTING THIS PROJECT (RE-SUBMITTING WITH THE WEIGHTS_UPDATE FUNCTION FIXED)
+                      OH - CANNOT RESUBMIT, as it was "Accepted" as Correct the first Time !  :-/
+                
 '''
 
 # Required: The training loss is below 0.09 and the validation loss is below 0.18.
