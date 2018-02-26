@@ -27,25 +27,8 @@ class NeuralNetwork(object):
         self.lr = learning_rate
         
         #### TODO: Set self.activation_function to your implemented sigmoid function ####
-        #
-        # Note: in Python, you can define a function with a lambda expression,
         self.activation_function = lambda x : 1/(1 + np.exp(-x))  
         
-        ### If the lambda code above is not something you're familiar with,
-        # You can uncomment out the following three lines and put your 
-        # implementation there instead.
-        #
-        #def sigmoid(x):
-        #    if (np.isnan(np.exp(-x))):
-        #        return .998              
-        #    else:
-        #        return 1/(1 + np.exp(-x)
-        #self.activation_function = sigmoid
-        
-        #self.activation_function = sigmoid
-        #   ^
-        #SyntaxError: invalid syntax
-
 
     def train(self, features, targets):
         #print('features.shape: ', features.shape)
@@ -89,29 +72,21 @@ class NeuralNetwork(object):
             X: features batch
 
         '''
-        #### Implement the forward pass here ####
         ### Forward pass ###
         
-        ## TODO: Hidden layer - Replace these values with your calculations.
-        # signals into hidden layer
+        # signals into Hidden layer
         hidden_inputs  = np.dot(X, self.weights_input_to_hidden)
-        #print("hidden_inputs shape:", hidden_inputs.shape)         # (2,)
         
-        # signals from hidden layer
-        # activation: sigmoid, activation_prime: output * (1-output)
+        # signals from Hidden layer
+        # activation: sigmoid aka self.activation_function; 
         hidden_outputs = self.activation_function(hidden_inputs) 
-        #print("hidden_outputs shape:", hidden_outputs.shape)       # (2,)
 
-        ## TODO: Output layer - Replace these values with your calculations.
-        # signals into final output layer
+        # signals into final Output layer
         final_inputs  = np.dot(hidden_outputs, self.weights_hidden_to_output) 
-        #print("final_inputs shape:", final_inputs.shape)           # (1,)
         
-        # signals from final output layer
-        # activation: f(x), activation_prime: 1
+        # signals from final Output layer
+        # activation function: f(x) = x
         final_outputs = final_inputs  
-            #X-NOPE: #final_outputs = self.activation_function(final_inputs) 
-        #print("final_outputs shape:", final_outputs.shape)         # (1,)
         
         return final_outputs, hidden_outputs
     
@@ -129,7 +104,6 @@ class NeuralNetwork(object):
             delta_weights_h_o: change in weights from hidden to output layers
 
         '''
-        #### Implement the backward pass here ####
         ### Backward pass ###
 
         ## TODO: Output error
@@ -141,40 +115,37 @@ class NeuralNetwork(object):
                 
         ### TODO: Backpropagated error terms ###
         
-        # gradient of the activation function, sigmoid: layer_output * (1-layer_output)
-        # and the layer error is: error * sigmoid_prime(layer_input)
-
         ## TODO: Calculate the output layer's Backpropogated error term ##
-        #  NOTICE: ACTIVATION FOR OUTPUT IS NOT SIGMOID, IT IS F(X)=X
-        #     NOT: output_error_term = error * y * (1-y) #(1,)       
-        # output_error_term = error * f_prime(x) == error * activation_prime(x) == error * 1 == error
+        #  NOTICE: ACTIVATION FOR OUTPUT IS NOT SIGMOID, IT IS F(X)=X       
         # output activation: f(x) = x
         # output activation_prime: 1 
         # output_error_term: error * activation_prime === error * 1 === error
-        
+
         output_error_term = error                                   # (1,)
         
         #print("output_error_term shape:", output_error_term.shape)
         
         ## TODO: Calculate the hidden layer's contribution to the error ##
-        #hidden_error = np.dot(output_error_term,            \
-        #                      self.weights_hidden_to_output \
-        #                     )
-        # output_error_term is a scaler, so not using the dot product
-        #hidden_error = output_error_term * self.weights_hidden_to_output 
-        
+
         hidden_error = np.dot(output_error_term[:, None],           #(1,1)
                               self.weights_hidden_to_output.T       #(1,2)
                              )
         
         #print("hidden_error shape:", hidden_error.shape)            # (1, 2)
         
+        
         ## TODO: Calculate the hidden layer's Backpropogated error term ##        
+
+        # gradient of the activation function, sigmoid is: 
+        # sigmoid_prime is: layer_output * (1-layer_output)
+        # layer error   is: error * sigmoid_prime(layer_input)
+
         hidden_error_term = hidden_error * (hidden_outputs) * (1-hidden_outputs)
         
         #print("hidden_error_term shape:", hidden_error_term.shape)  # (1, 2)
                 
         ### delta_weights_layer: learningRate * layer_error_weighted * layer_input_values ###
+        
         ## Weight step (hidden to output) ##       
         delta_weights_h_o += self.lr * hidden_outputs[:, None] \
                                      * output_error_term             #[None, :]   # ho(2,)er(1,)
@@ -190,10 +161,6 @@ class NeuralNetwork(object):
         #This 1 version BAD
         delta_weights_h_o_4 = self.lr * hidden_outputs[None, :] \
                                    * output_error_term#[None, :]   # ho(??)er(??)->(1, 2)
-        print("_delta_weights_h_o_1:", delta_weights_h_o_1)  # (2, 1)
-        print("_delta_weights_h_o_2:", delta_weights_h_o_2)  # (2, 1)
-        print("_delta_weights_h_o_3:", delta_weights_h_o_3)  # (2, 1)
-        print("_delta_weights_h_o_4:", delta_weights_h_o_4, delta_weights_h_o_4.shape)  # (1, 2)
         '''
         #print("_delta_weights_h_o shape:", delta_weights_h_o.shape)  # (2, 1)
         
@@ -201,7 +168,6 @@ class NeuralNetwork(object):
         delta_weights_i_h += self.lr * X[:, None]  \
                                      * hidden_error_term
         
-        #delta_weights_i_h += self.lr * hidden_error_term * X[:, None] #X:(3,) er:(1, 2)
         #print("delta_weights_i_h shape:", delta_weights_i_h.shape)
         
         return delta_weights_i_h, delta_weights_h_o
@@ -231,19 +197,20 @@ class NeuralNetwork(object):
         '''
         
         #### Implement the forward pass here ####
+               
         
-        ## TODO: Hidden layer
-        
-        # signals into hidden layer
+        # HIDDEN LAYER
+        # signals into Hidden Layer
         hidden_inputs  = np.dot(features, self.weights_input_to_hidden)        
-        # signals from hidden layer
+        
+        # signals from Hidden Layer
         hidden_outputs = self.activation_function(hidden_inputs) 
         
-        ## TODO: Output layer
-        
-        # signals into final output layer
+        ## OUTPUT LAYER        
+        # signals into final Output Layer
         final_inputs  = np.dot(hidden_outputs, self.weights_hidden_to_output)         
-        # signals from final output layer
+        
+        # signals from final Output Layer
         final_outputs = final_inputs#self.activation_function(final_inputs)  
         
         return final_outputs
@@ -259,12 +226,16 @@ train_features shape: (15435, 56)
 '''
 
 iterations = 1200     # batch size: 128, 120 iterations / pass of the entire dataset (on average)
-learning_rate = 0.015  # 56 ** -.5 = .134
+learning_rate = 0.015 # 56 ** -.5 = .134
 hidden_nodes = 6      # features: 56, hidden nodes: (n_features-n_outputs)/2, try: 28
 output_nodes = 1      # I want an output of a single number: total number of rentals at each (hour)
 print('params: ',iterations, learning_rate, hidden_nodes, output_nodes)
 
+
+
+
 '''
+# TEST RESULTS, TUNING THE PARAMETERS:
 # 100, 0.1,   2, 1  :Progress: 99.0% ... Training loss: 0.952 ... Validation loss: 1.365
 # 100, 0.01,  2, 1 *:Progress: 99.0% ... Training loss: 0.382 ... Validation loss: 0.468
 # 100, 0.001, 2, 1  :Progress: 99.0% ... Training loss: 0.732 ... Validation loss: 1.278
@@ -355,8 +326,7 @@ print('params: ',iterations, learning_rate, hidden_nodes, output_nodes)
  2400, 0.015,  6, 1 *:Progress: 100.0% ... Training loss: 0.074 ... Validation loss: 0.150
  1000, 0.015,  6, 1  :Progress: 99.9% ... Training loss: 0.075 ... Validation loss: 0.160
  1200, 0.015,  6, 1  :Progress: 99.9% ... Training loss: 0.069 ... Validation loss: 0.161
-                      
-                      
+                                            
 '''
 
 # Required: The training loss is below 0.09 and the validation loss is below 0.18.
