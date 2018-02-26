@@ -8,7 +8,8 @@ I wrote the:
 - backprop algorithm, the 
 - forward prop algorithm, and 
 - tuned the training paramaters (number of: epochs, hidden nodes, output nodes, and the learning rate)  
-This started as a copy of [Your First Neural Network](https://github.com/udacity/deep-learning/tree/master/first-neural-network)
+
+This started as a copy of [Your First Neural Network](https://github.com/udacity/deep-learning/tree/master/first-neural-network) directory from the course repo.
 
 ----------------------------
 
