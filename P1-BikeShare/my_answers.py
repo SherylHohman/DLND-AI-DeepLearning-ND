@@ -147,8 +147,10 @@ class NeuralNetwork(object):
         ### delta_weights_layer: learningRate * layer_error_weighted * layer_input_values ###
         
         ## Weight step (hidden to output) ##       
-        delta_weights_h_o += self.lr * hidden_outputs[:, None] \
-                                     * output_error_term             #[None, :]   # ho(2,)er(1,)
+        #delta_weights_h_o += self.lr * hidden_outputs[:, None] \
+        #                             * output_error_term             #[None, :]   # ho(2,)er(1,)
+        
+        delta_weights_h_o += hidden_outputs[:, None] * output_error_term  #[None, :]   # ho(2,)er(1,)
         
         '''
         # These 3 versions SAME
@@ -165,8 +167,11 @@ class NeuralNetwork(object):
         #print("_delta_weights_h_o shape:", delta_weights_h_o.shape)  # (2, 1)
         
         ## Weight step (input to hidden) ##        
-        delta_weights_i_h += self.lr * X[:, None]  \
-                                     * hidden_error_term
+        #delta_weights_i_h += self.lr * X[:, None]  \
+        #                             * hidden_error_term
+
+        delta_weights_i_h += X[:, None] * hidden_error_term
+            
         
         #print("delta_weights_i_h shape:", delta_weights_i_h.shape)
         
@@ -187,10 +192,10 @@ class NeuralNetwork(object):
         #print("Batch Size: ", n_records)   # 128
                 
         # update hidden-to-output weights with gradient descent step
-        self.weights_hidden_to_output += delta_weights_h_o / n_records
+        self.weights_hidden_to_output += delta_weights_h_o * self.lr / n_records
         
         # update input-to-hidden weights with gradient descent step
-        self.weights_input_to_hidden += delta_weights_i_h / n_records
+        self.weights_input_to_hidden += delta_weights_i_h * self.lr / n_records
 
     def run(self, features):
         ''' Run a forward pass through the network with input features 
@@ -229,8 +234,8 @@ train_features shape: (15435, 56)
  test_features shape: (  504, 56)
 '''
 
-iterations = 1328     # batch size: 128, (15435/128) = ~120.586 iterations / pass of the entire dataset (on average)
-learning_rate = 2.0   # 0.015 * 128 = 1.92 as a Starting point
+iterations = 2400     # batch size: 128, (15435/128) = ~120.586 iterations / pass of the entire dataset (on average)
+learning_rate = 1.9   # 0.015 * 128 = 1.92 as a Starting point
 hidden_nodes = 6      # features: 56, hidden nodes: (n_features-n_outputs)/2, try: 28
 output_nodes = 1      # I want an output of a single number: total number of rentals at each (hour)
 print('params: ',iterations, learning_rate, hidden_nodes, output_nodes)
@@ -352,7 +357,59 @@ print('params: ',iterations, learning_rate, hidden_nodes, output_nodes)
  1328, 2.0 ,   6, 1**:Progress: 99.9% ... Training loss: 0.068 ... Validation loss: 0.135
                       SUBMITTING THIS PROJECT (RE-SUBMITTING WITH THE WEIGHTS_UPDATE FUNCTION FIXED)
                       OH - CANNOT RESUBMIT, as it was "Accepted" as Correct the first Time !  :-/
-                
+                      
+------ ANOTHER UPDATE TO WHERE WEIGHTS UPDATE USES LR AND N_RECORDS - AND WHERE WEIGHTS UPDATE TAKES PLACE -------
+------    THIS VERSION OF THE PROJECT IS 100% CORRECT !! IT PASSES PA AUTO_REVIEWER - SEE BELOW !! ------
+1328, 2.0 ,   6, 1   :Progress: 99.9% ... Training loss: 0.074 ... Validation loss: 0.153
+1328, 2.0 ,   6, 1   :Progress: 99.9% ... Training loss: 0.077 ... Validation loss: 0.158
+1328, 2.1 ,   6, 1   :Progress: 99.9% ... Training loss: 0.180 ... Validation loss: 0.241
+                      YEP, don't increas lr
+2400, 2.0 ,   6, 1   :Progress: 100.0% ... Training loss: 0.077 ... Validation loss: 0.166
+2400, 1.9 ,   6, 1   :Progress: 100.0% ... Training loss: 0.067 ... Validation loss: 0.163
+
 '''
 
 # Required: The training loss is below 0.09 and the validation loss is below 0.18.
+
+''' RESULTS FROM PROJECT ASSISTENT AUTO REVIEWER
+(dlnd) sherylhohman (master *) P1-BikeShare $  udacity submit
+Submission includes the following files:
+    my_answers.py
+    Your_first_neural_network.ipynb
+
+Uploading submission...
+[=========================== 100% ===========================] 719720/719720
+
+Waiting for results...Done!
+
+Results:
+--------
+
+************************************************************************
+                          Test Result Summary                           
+************************************************************************
+
+Produces good results when running the network on full data            .
+The activation function is a sigmoid                                   .
+The backpropagation implementation is correct                          .
+The forward pass implementation is correct                             .
+The learning_rate is reasonable                                        .
+The number of epochs is reasonable                                     .
+The number of hidden nodes is reasonable                               .
+The number of output nodes is correct                                  .
+The run method is correct                                              .
+The update_weights implementation is correct                           .
+The weights are updated correctly on training                          .
+
+--------------------------------------------------------------------------------
+
+Congratulations!  It looks like your network passed all of our tests.  You're ready to submit your project at
+https://review.udacity.com/#!/rubrics/700/submit-zip
+
+
+Details are available in first_neural_network-result-213296.json.
+
+If you would like this version of the project to be reviewed,
+submit first_neural_network-213296.zip to the reviews website.
+
+'''
