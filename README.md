@@ -1,6 +1,6 @@
 ### My Completed Projects:
 
-#### [Project 1: BikeShare](https://github.com/udacity/deep-learning/tree/master/P1-BikeShare):
+#### [Project 1: BikeShare](https://github.com/SherylHohman/AI-DeepLearning-ND/blob/P1-BikeShare/README.md):
   
 Implements a neural network with a single hidden layer in Numpy to predict bike rentals. 
 
