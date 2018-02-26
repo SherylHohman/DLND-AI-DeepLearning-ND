@@ -4,7 +4,11 @@
   
 Implements a neural network with a single hidden layer in Numpy to predict bike rentals. 
 
-I wrote the: 
+View the results of my trained network:  
+[This Jupyter notebook](https://github.com/SherylHohman/AI-DeepLearning-ND/blob/master/P1-BikeShare/Your_first_neural_network.ipynb) that runs my neural network, with results embedded.  Here is the [HTML version](http://htmlpreview.github.io/?https://github.com/SherylHohman/AI-DeepLearning-ND/blob/master/P1-BikeShare/Your_first_neural_network.html)
+
+[Here is my code](https://github.com/SherylHohman/AI-DeepLearning-ND/blob/master/P1-BikeShare/my_answers.py) for this neural net.  
+I wrote the:  
 - backprop algorithm, the 
 - forward prop algorithm, and 
 - tuned the training paramaters: the number of
@@ -12,6 +16,8 @@ I wrote the:
   - hidden nodes, 
   - output nodes, and the
   - learning rate  
+ 
+This is the notebook file that runs the network.
 
 This started as a copy of [Your First Neural Network](https://github.com/udacity/deep-learning/tree/master/first-neural-network) directory from the course repo.
 
